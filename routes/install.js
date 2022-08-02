@@ -19,12 +19,21 @@ router.get('/install', async (req, res) => {
     { name: 'role' },
     // User CRUD Access
     { name: 'user' },
+    /** Admin */
+    { name: 'admin' },
+    /** Chef */
+    { name: 'chef' },
+    /** Servant */
+    { name: 'servant' },
+    /** Cashier */
+    { name: 'cashier' },
   ]
   await prisma.permission.createMany({
     data: permissions,
     skipDuplicates: true,
   });
-  permissions = await prisma.permission.findMany();
+  permissions = await prisma.permission.findMany({ where: { name: 'admin' } });
+  let servantPermission = await prisma.permission.findFirst({ where: { name: 'servant' } });
   /** Creating Role */
   const adminRole = { name: 'admin' }
   const cashierRole = { name: 'cashier' }
@@ -64,6 +73,22 @@ router.get('/install', async (req, res) => {
   }
   await prisma.roleHasPermission.createMany({
     data: adminHasParms,
+    skipDuplicates: true,
+  });
+  let servant = await prisma.role.findFirst({ where: { name: servantRole.name }})
+  let chef = await prisma.role.findFirst({ where: { name: chefRole.name }})
+  let chefPermission = await prisma.permission.findFirst({ where: { name: 'chef' }})
+  let cashier = await prisma.role.findFirst({ where: { name: cashierRole.name }})
+  let cashierPermission = await prisma.permission.findFirst({ where: { name: 'cashier' }})
+  await prisma.roleHasPermission.createMany({
+    data: [
+      /** Servant */
+      { permissionId: servantPermission.id, roleId: servant.id },
+      /** Chef */
+      { permissionId: chefPermission.id, roleId: chef.id },
+      /** Cashier */
+      { permissionId: cashierPermission.id, roleId: cashier.id },
+    ],
     skipDuplicates: true,
   });
   return res.status(200).json('Installed Successfully')

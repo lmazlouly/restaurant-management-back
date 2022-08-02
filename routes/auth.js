@@ -7,7 +7,7 @@ const tokenSecret = process.env.SECRET;
 const { authenticated, hasPermission, required } = require('../middlewares');
 
 router.get('/isLogged', [authenticated], async (req, res) => {
-  const role = await prisma.userHasRole.findFirst({ where: { userId: parseInt(req.user.id) }}).role();
+  const role = await prisma.user.findFirst({ where: { id: parseInt(req.user.id) }}).role();
   const roleHasPermissions = await prisma.roleHasPermission.findMany({ where: { roleId: role.id} });
   const permissionsIds = roleHasPermissions.map(rhp => rhp.permissionId);
   const permissions = await prisma.permission.findMany({ where: { id: { in: permissionsIds } }})

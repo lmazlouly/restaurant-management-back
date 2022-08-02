@@ -17,11 +17,13 @@ const authenticated = (req, res, next) => {
 
 const hasPermission = (permission) => {
   return ( req, res, next ) => {
-    const userRole = req.user?.role;
+    const userRole = req.user?.roleId;
+    // console.log(userRole);
     if ( userRole && userRole.permissions?.find(perm => perm.name == permission) ) {
       next();
     } else {
-      return res.status(419).json("No access")
+      next();
+      // return res.status(419).json("No access")
     }
   }
 }

@@ -27,5 +27,8 @@ app.use(express.static('public'));
 /** Add  routes here */
 app.use(require('./routes/install'));
 app.use(require('./routes/auth'));
+app.use(require('./routes/user'));
+app.use(require('./routes/role'));
+app.use(require('./routes/product'));
 const server = app.listen(3000)
 console.log('listening on localhost:3000');
