@@ -1,13 +1,6 @@
 require('dotenv').config({path: __dirname + '/.env'})
 /** Express */
 const express = require('express');
-/** Using PrismaClient (Prisma ORM) */
-const { PrismaClient } = require('@prisma/client');
-/** Generating Tokens Via JWT */
-const jwt = require('jsonwebtoken');
-const tokenSecret = process.env.SECRET;
-/** Middlewares will be seperated */
-const { authenticated, hasPermission } = require('./middlewares');
 /** Cors is to enable REST API requests from other servers rather than localhost:3000 */
 const cors = require('cors');
 const corsOptions = {
@@ -24,11 +17,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(express.static('public'));
-/** Add  routes here */
+/** Add routes here */
 app.use(require('./routes/install'));
 app.use(require('./routes/auth'));
 app.use(require('./routes/user'));
 app.use(require('./routes/role'));
 app.use(require('./routes/product'));
+app.use(require('./routes/order'));
 const server = app.listen(3000)
 console.log('listening on localhost:3000');
